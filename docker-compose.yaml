@@ -1,0 +1,36 @@
+version: '3'
+volumes:
+  data:
+services:
+  api:
+    image: rails-sample-api:latest
+    container_name: rails-sample-api
+    build:
+      args:
+        RAILS_ENV: development
+#    command: bundle exec rails s -p 3000 -b '0.0.0.0'
+    volumes:
+      - ".:/api"
+    ports:
+      - "3000:3000"
+    tty: true
+    environment:
+      MYSQL_DATABASE: rails_sample_api_development
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+      DATABASE_ENDPOINT: rails-sample-db
+    depends_on:
+      - db
+    links:
+      - db
+  db:
+    image: mysql:5.7
+    container_name: rails-sample-db
+    volumes:
+      - data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: rails_sample_api_development
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+
